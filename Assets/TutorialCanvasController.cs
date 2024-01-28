@@ -29,6 +29,6 @@ public class TutorialCanvasController : MonoBehaviour
 
     public void CloseDialogAndStartLevel()
     {
-        LevelLoader.Instance.LoadNextLevel();
+        LevelLoader.Instance.TransitionLoadLevelWithIndex((int)Constants.SceneList.MAIN_MENU);
     }
 }

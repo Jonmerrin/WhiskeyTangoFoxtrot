@@ -59,3 +59,4 @@ MonoBehaviour:
   notePressed: {fileID: 11400000, guid: 0151c1f0ee1c64b83b5f770b6fea6b49, type: 2}
   OnPausedEvent: {fileID: 11400000, guid: a11b254cbd13749688edb311e71f4487, type: 2}
   UIRefresh: {fileID: 11400000, guid: 8ca9a9a9c00e042bbaf809c15545eb58, type: 2}
+  modOrder: 0000000002000000040000000500000001000000

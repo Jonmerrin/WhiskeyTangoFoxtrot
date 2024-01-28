@@ -35,6 +35,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private VoidEvent UIRefresh;
 
+    // TODO: Would be better as a scriptable object that also can execute the modifiers
+    public DrunkModifiers[] modOrder;
+
     private void OnEnable()
     {
         notePressed.Event += OnNotePressed;
@@ -196,4 +199,14 @@ public struct DrunkModifierFlags
         everyoneInTheMiddle = flags.everyoneInTheMiddle;
         blurryVision = flags.blurryVision;
     }
+}
+
+public enum DrunkModifiers
+{
+    START_DRIFT_HORIZONTAL,
+    START_DRIFT_VERTICAL,
+    INTENSIFY_DRIFT_HORIZONTAL,
+    INTENSIFY_DRIFT_VERTICAL,
+    SWAP_LANES,
+    CHANGE_KEY
 }

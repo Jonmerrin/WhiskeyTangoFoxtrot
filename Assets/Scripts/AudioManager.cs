@@ -8,6 +8,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip[] music;
     public AudioClip levelMusic;
 
+    public AudioSource MusicPlayer;
+
     private List<AudioSource> pausedClips;
 
     [SerializeField]
@@ -31,7 +33,7 @@ public class AudioManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(gameObject);
 
         initializeDict();
     }
@@ -82,6 +84,8 @@ public class AudioManager : MonoBehaviour
             source.clip = clip;
             source.volume = 0.5f;
         }
+        MusicPlayer = gameObject.AddComponent<AudioSource>();
+        MusicPlayer.volume = 0.5f;
     }
 
     void StopTracks()
@@ -189,5 +193,28 @@ public class AudioManager : MonoBehaviour
     public void SplashScreen()
     {
         gameObject.GetComponents<AudioSource>()[17].Play();
+    }
+
+    public void SetLevelMusic(int musicIndex)
+    {
+        levelMusic = music[musicIndex];
+        MusicPlayer.clip = levelMusic;
+    }
+
+
+    public void SetLevelMusic(AudioClip levelMusicClip)
+    {
+        levelMusic = levelMusicClip;
+        MusicPlayer.clip = levelMusic;
+    }
+
+    public void StartLevelMusic()
+    {
+        MusicPlayer.Play();
+    }
+
+    public void StartLevelMusicWithDelay(float delay)
+    {
+        MusicPlayer.PlayDelayed(delay);
     }
 }

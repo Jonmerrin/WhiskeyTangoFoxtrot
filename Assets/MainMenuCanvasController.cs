@@ -13,7 +13,7 @@ public class MainMenuCanvasController : MonoBehaviour
 
     public void OnPlayGame()
     {
-        LevelLoader.Instance.TransitionLoadLevelWithIndex(2);
+        LevelLoader.Instance.TransitionLoadLevelWithIndex((int)Constants.INTRO_SCENE_INDEX);
     }
 
 }

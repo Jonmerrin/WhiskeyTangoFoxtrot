@@ -8,8 +8,12 @@ public class LevelManager : MonoBehaviour
     public CameraController cam;
     public Animator spaceBarAnim;
     public LaneManager[] lanes;
+    public AudioClip levelMusic;
     private bool paused;
+    private bool levelOngoing = false;
     private bool canDrink = false;
+    [SerializeField]
+    private Constants.SceneList nextLevel;
 
     [SerializeField]
     private BoolEvent Pause;
@@ -29,6 +33,12 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        // TODO: Honestly should do something with the game manager. Like
+        // resetting values or giving it info on this level, such as "do you
+        // continue to the next level after this or go home" kind of thing.
+        // Maybe the other way around. Who knows. Everything's spaghetti.
+        AudioManager.Instance.SetLevelMusic(levelMusic);
+        AudioManager.Instance.StartLevelMusicWithDelay(1);
         RefreshUI();
     }
 
@@ -37,23 +47,9 @@ public class LevelManager : MonoBehaviour
         if(GameManager.Instance.GetCrowdScore() < 0)
         {
             // Game over, man. Game over.
-            LevelLoader.Instance.LoadNextLevel();
+            LevelLoader.Instance.TransitionLoadLevelWithIndex((int)Constants.SceneList.GAME_OVER);
         }
         // TODO: Also add a condition for when the song ends. Actually, maybe that's an event. IDK.
-
-
-        //TODO: Remove these! Dev only!
-
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            ChangeLane();
-        }
-        if (Input.GetKeyDown(KeyCode.RightShift))
-        {
-            SwapLanes();
-        }
-        // TODO: DON'T FORGET!!
-
 
         if (paused)
         {
@@ -66,6 +62,18 @@ public class LevelManager : MonoBehaviour
         {
             Drink();
         }
+
+        if(AudioManager.Instance.MusicPlayer.isPlaying)
+        {
+            print("something must be happening");
+            levelOngoing = true;
+        } else if(levelOngoing)
+        {
+            //End level here
+            print("Ending the level");
+            StartCoroutine(EndLevelAfterSeconds(2));
+            levelOngoing = false;
+        }
     }
 
     private void Drink()
@@ -75,7 +83,40 @@ public class LevelManager : MonoBehaviour
         StartCoroutine(cam.LensFlash(0.25f, 200));
         StartCoroutine(cam.ChromAbFlash(1, 500));
         AudioManager.Instance.SloMo();
+        if (GameManager.Instance.GetDrinkCount() >= GameManager.Instance.modOrder.Length)
+        {
+            ImplementDrunkModifier(Random.value < 0.5 ? DrunkModifiers.CHANGE_KEY : DrunkModifiers.SWAP_LANES);
+        } else
+        {
+            ImplementDrunkModifier(GameManager.Instance.modOrder[GameManager.Instance.GetDrinkCount()]);
+        }
         GameManager.Instance.Drink(); // Replace with event eventually
+
+    }
+
+    private void ImplementDrunkModifier(DrunkModifiers mod)
+    {
+        switch(mod)
+        {
+            case DrunkModifiers.START_DRIFT_HORIZONTAL:
+                GameManager.Instance.flags.driftingHorizontal = true;
+                break;
+            case DrunkModifiers.START_DRIFT_VERTICAL:
+                GameManager.Instance.flags.driftingVertical = true;
+                break;
+            case DrunkModifiers.INTENSIFY_DRIFT_HORIZONTAL:
+                GameManager.Instance.horizontalDriftAmount += 1.0f; // MAGIC NUMBERS!!! TODO: Remove them
+                break;
+            case DrunkModifiers.INTENSIFY_DRIFT_VERTICAL:
+                GameManager.Instance.verticalDriftAmount += 1.0f; // MAGIC NUMBERS!!! TODO: Remove them
+                break;
+            case DrunkModifiers.CHANGE_KEY:
+                ChangeLane();
+                break;
+            case DrunkModifiers.SWAP_LANES:
+                SwapLanes();
+                break;
+        }
     }
 
     private void ChangeLane()
@@ -134,46 +175,27 @@ public class LevelManager : MonoBehaviour
         UIRefresh.RaiseEvent();
     }
 
+    private void OnLevelEnd()
+    {
+        print("Transitioning to scene " + nextLevel.ToString() + " at index " + ((int)nextLevel).ToString());
+        if(nextLevel == Constants.SceneList.GAME_OVER)
+        {
+            LevelLoader.Instance.TransitionLoadLevelWithIndex(((int)nextLevel));
+        } else
+        {
+            LevelLoader.Instance.LoadLevelWithIndex(((int)nextLevel));
+        }
+    }
+
+    private IEnumerator EndLevelAfterSeconds(float time)
+    {
+        yield return new WaitForSeconds(time);
+        OnLevelEnd();
+    }
+
+
+
 
     // Not necessary for jam, especially since it has no outward references.
     //private void OnNotePressed(NotePressLevels level)
-    //{
-    //    print(level.ToString());
-    //    if (level != NotePressLevels.MISS)
-    //    {
-    //        GameManager.Instance.GetCombo() += 1;
-    //        crowdScore += Constants.HIT_MISS_COUNT_VALUE;
-    //        if (combo > longestCombo)
-    //        {
-    //            longestCombo = combo;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        combo = 0;
-    //        crowdScore -= Constants.MISS_MISS_COUNT_VALUE;
-    //    }
-    //    switch (level)
-    //    {
-    //        case NotePressLevels.PERFECT:
-    //            score += Constants.PERFECT_NOTE_SCORE;
-    //            break;
-    //        case NotePressLevels.GREAT:
-    //            score += Constants.GREAT_NOTE_SCORE;
-    //            break;
-    //        case NotePressLevels.GOOD:
-    //            score += Constants.GOOD_NOTE_SCORE;
-    //            break;
-    //        case NotePressLevels.MISS:
-    //            break;
-    //        default:
-    //            break;
-    //    }
-    //    if (combo > 1)
-    //    {
-    //        score += Constants.COMBO_BONUS_SCORE * combo * (drinkCount > 0 ? drinkCount * Constants.PER_DRINK_SCORE_MULTIPLIER : 1);
-    //    }
-
-    //    RefreshUI();
-    //}
 }

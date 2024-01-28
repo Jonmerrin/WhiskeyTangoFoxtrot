@@ -17,6 +17,7 @@ public class LaneManager : MonoBehaviour
     public List<NoteController> notes;
 
     public BoolEvent OnPauseEvent;
+    private float currentMusicTime = 0;
 
     private bool paused = false;
 
@@ -52,7 +53,10 @@ public class LaneManager : MonoBehaviour
         {
             return;
         }
-        NotesParent.transform.localPosition += new Vector3(0, 1, 0) * GameManager.Instance.tempo * Time.deltaTime;
+        //NotesParent.transform.localPosition += new Vector3(0, 1, 0) * GameManager.Instance.tempo * Time.deltaTime;
+        float deltaTime = AudioManager.Instance.MusicPlayer.time - currentMusicTime;
+        currentMusicTime = AudioManager.Instance.MusicPlayer.time;
+        NotesParent.transform.localPosition += new Vector3(0, 1, 0) * GameManager.Instance.tempo * deltaTime;
     }
 
     [ContextMenu("Add note")]
