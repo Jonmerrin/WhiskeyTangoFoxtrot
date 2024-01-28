@@ -19,9 +19,6 @@ public class LevelLoader : MonoBehaviour
             Instance = this;
         }
     }
-    void Start()
-    {
-    }
 
     public void LoadNextLevel()
     {

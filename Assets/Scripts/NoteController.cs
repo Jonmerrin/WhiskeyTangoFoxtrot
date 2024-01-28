@@ -16,6 +16,8 @@ public class NoteController : MonoBehaviour
     private bool invertHorizontalDrift;
     private bool pastThreshold = false;
     private DrunkModifierFlags flags;
+    private float horizontalDriftAmount;
+    private float verticalDriftAmount;
 
     [SerializeField]
     int spriteTop = 0;
@@ -26,7 +28,6 @@ public class NoteController : MonoBehaviour
         float newYPos = (transform.localPosition.y - lane.Receiver.transform.position.y) * GameManager.Instance.tempo + lane.Receiver.transform.position.y;
         originalPosition = new Vector3(transform.localPosition.x, newYPos, transform.localPosition.z);
         invertHorizontalDrift = Random.value > 0.5f;
-        flags = new DrunkModifierFlags(GameManager.Instance.flags);
     }
 
     private void Update()
@@ -47,11 +48,11 @@ public class NoteController : MonoBehaviour
 
         if (flags.driftingHorizontal)
         {
-            xOffset = Mathf.Sin(lane.Receiver.transform.position.y - pos.y) * GameManager.Instance.horizontalDriftAmount * (invertHorizontalDrift ? -1 : 1);
+            xOffset = Mathf.Sin(lane.Receiver.transform.position.y - pos.y) * horizontalDriftAmount * (invertHorizontalDrift ? -1 : 1);
         }
         if (flags.driftingVertical)
         {
-            yOffset = -Mathf.Sin(lane.Receiver.transform.position.y - (pos.y)) * GameManager.Instance.verticalDriftAmount;
+            yOffset = -Mathf.Sin(lane.Receiver.transform.position.y - (pos.y)) * verticalDriftAmount;
         }
 
         transform.localPosition = originalPosition + new Vector2(xOffset, yOffset);
@@ -65,6 +66,18 @@ public class NoteController : MonoBehaviour
         sprite.color = lane.getLaneColor();
 
         flags = new DrunkModifierFlags(GameManager.Instance.flags);
+        horizontalDriftAmount = Random.Range(GameManager.Instance.horizontalDriftAmount, GameManager.Instance.horizontalDriftLimit);
+        verticalDriftAmount = Random.Range(GameManager.Instance.verticalDriftAmount, GameManager.Instance.verticalDriftLimit);
+        if(flags.driftingHorizontal && flags.driftingVertical)
+        {
+            if(Random.value < 0.5f)
+            {
+                flags.driftingVertical = false;
+            } else
+            {
+                flags.driftingHorizontal = false;
+            }
+        }
     }
 
     private void OnDestroy()

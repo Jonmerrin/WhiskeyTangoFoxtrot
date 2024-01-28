@@ -14,7 +14,7 @@ public class Constants
     public const int GREAT_NOTE_SCORE = 40;
     public const int GOOD_NOTE_SCORE = 20;
     public const int COMBO_BONUS_SCORE = 2;
-    public const int NEXT_DRINK_THRESHOLD = 100;
+    public const int NEXT_DRINK_THRESHOLD = 500;
     public const int PER_DRINK_SCORE_MULTIPLIER = 2;
 
     public const int MAX_MISS_COUNT_LIMIT = 100;
@@ -36,8 +36,7 @@ public class Constants
         MAIN_MENU,
         TUTORIAL,
         GAME_OVER,
-        INTRO,
-        EDM,
+        //INTRO,
         TANGO,
         FOXTROT,
         STEAMBOAT

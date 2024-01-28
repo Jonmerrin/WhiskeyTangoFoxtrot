@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56e69ec479ff144b8a032ed80de828b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempo: 1
+  tempo: 2
   flags:
     driftingHorizontal: 0
     driftingVertical: 0
@@ -54,7 +54,10 @@ MonoBehaviour:
     blurryVision: 0
   horizontalDriftAmount: 0.25
   verticalDriftAmount: 3
+  horizontalDriftLimit: 0
+  verticalDriftLimit: 0
   laneDriftAmount: 0
+  returnToMainAfterLevel: 0
   startAtTime: 0
   notePressed: {fileID: 11400000, guid: 0151c1f0ee1c64b83b5f770b6fea6b49, type: 2}
   OnPausedEvent: {fileID: 11400000, guid: a11b254cbd13749688edb311e71f4487, type: 2}

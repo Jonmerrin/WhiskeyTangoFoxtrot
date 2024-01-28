@@ -16,11 +16,14 @@ public class GameManager : MonoBehaviour
 
     public float horizontalDriftAmount;
     public float verticalDriftAmount;
+    public float horizontalDriftLimit;
+    public float verticalDriftLimit;
     public float laneDriftAmount;
     private int score = 0;
     private int crowdScore;
     private int combo;
     private int longestCombo;
+    public bool returnToMainAfterLevel;
 
     // For dev purposes only
     public float startAtTime = 0;
@@ -76,6 +79,8 @@ public class GameManager : MonoBehaviour
         combo = 0;
         score = 0;
         crowdScore = Constants.MAX_MISS_COUNT_LIMIT / 2;
+        horizontalDriftLimit = horizontalDriftAmount;
+        verticalDriftLimit = verticalDriftAmount;
         //RefreshUI();
     }
 

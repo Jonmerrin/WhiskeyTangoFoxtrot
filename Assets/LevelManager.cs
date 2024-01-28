@@ -37,6 +37,11 @@ public class LevelManager : MonoBehaviour
         // resetting values or giving it info on this level, such as "do you
         // continue to the next level after this or go home" kind of thing.
         // Maybe the other way around. Who knows. Everything's spaghetti.
+        if(GameManager.Instance.returnToMainAfterLevel)
+        {
+            GameManager.Instance.returnToMainAfterLevel = false;
+            nextLevel = Constants.SceneList.MAIN_MENU;
+        }
         AudioManager.Instance.SetLevelMusic(levelMusic);
         AudioManager.Instance.StartLevelMusicWithDelay(1);
         RefreshUI();
@@ -105,10 +110,10 @@ public class LevelManager : MonoBehaviour
                 GameManager.Instance.flags.driftingVertical = true;
                 break;
             case DrunkModifiers.INTENSIFY_DRIFT_HORIZONTAL:
-                GameManager.Instance.horizontalDriftAmount += 1.0f; // MAGIC NUMBERS!!! TODO: Remove them
+                GameManager.Instance.horizontalDriftLimit += 1.0f; // MAGIC NUMBERS!!! TODO: Remove them
                 break;
             case DrunkModifiers.INTENSIFY_DRIFT_VERTICAL:
-                GameManager.Instance.verticalDriftAmount += 1.0f; // MAGIC NUMBERS!!! TODO: Remove them
+                GameManager.Instance.verticalDriftLimit += 1.0f; // MAGIC NUMBERS!!! TODO: Remove them
                 break;
             case DrunkModifiers.CHANGE_KEY:
                 ChangeLane();
@@ -131,6 +136,7 @@ public class LevelManager : MonoBehaviour
         {
             lanes[laneNum].ChangeKey((KeyCode)Random.Range(97, 122));
         }
+        StartCoroutine(lanes[laneNum].ShowIndicatorArrowForSeconds(1.5f));
     }
 
     private void SwapLanes()
@@ -143,6 +149,8 @@ public class LevelManager : MonoBehaviour
         }
 
         StartCoroutine(MoveSwappedLanes(lanes[lane1], lanes[lane2]));
+        StartCoroutine(lanes[lane1].ShowIndicatorArrowForSeconds(1.5f));
+        StartCoroutine(lanes[lane2].ShowIndicatorArrowForSeconds(1.5f));
     }
 
 
