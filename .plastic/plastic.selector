@@ -1,0 +1,4 @@
+repository "2401_WhiskeyTangoFoxtrot@XxXMacroHardXxX@cloud"
+  path "/"
+    br "/main"
+    co "/main"
